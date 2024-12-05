@@ -1,4 +1,4 @@
-# Expense DEV Infrastructure
+# Roboshop DEV Infrastructure
 
 ![alt text](roboshop.svg)
 
