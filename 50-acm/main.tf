@@ -1,3 +1,4 @@
+
 resource "aws_acm_certificate" "roboshop" {
   domain_name       = "*.${var.zone_name}" # *.daws81s.online
   validation_method = "DNS"

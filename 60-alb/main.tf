@@ -52,10 +52,10 @@ resource "aws_lb_listener" "https" {
 module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
 
-  zone_name = var.zone_name #daws81s.online
+  zone_name = var.zone_name #dev.divyavutakanti.com
   records = [
     {
-      name    = "roboshop-${var.environment}" # roboshop-dev.daws81s.online
+      name    = "roboshop-${var.environment}" # roboshop-dev.dev.divyavutakanti.com
       type    = "A"
       alias   = {
         name    = module.ingress_alb.dns_name

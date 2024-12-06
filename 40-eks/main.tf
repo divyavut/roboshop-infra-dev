@@ -3,14 +3,12 @@ resource "aws_key_pair" "eks" {
   # you can paste the public key directly like this
   #public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6ONJth+DzeXbU3oGATxjVmoRjPepdl7sBuPzzQT2Nc sivak@BOOK-I6CR3LQ85Q"
   //public_key = file("~/.ssh/eks.pub")
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAwrcfiQKv9v5spMRPVt0KiP+1LL2F10v3KfOC0P/9GchUoYQIeUVBSCMYBbcQdXp0dueCvo0/Jnu8VoPY6JNxjMp8KPcFPSD820/byrLX+nZSvBUyob+VjTVzaCn7B0bDNGszOfwMN9muq/CTMcMxQOIJ4jFecOgt7SgZbbNh7g6/2q5SJOuFiWZkqgsxvbAytVA3/FL0v5UU+Ba7Kh1Ugu1skQNDClvpZg+NzHHQNP6E4EWAtZSQUflPS83qtvJPF6cXj9bFb7h5kG+i2qWsB6+iujC+964XWImGr8ftVOpe6JWxRcg+C++bTJgz4sdWxCBbo/KtpzjLzVtvOpAI10V9Y+KGkPQuEVYty9Wk1HzLb13TS+iWbXXdrW0eadFl5nGsyrvE1Yen+Tae7J6ayRmjrfYw6Dio1rAmTW1Sms+Df4cESzpVsjEALfoqJmNxDJy6SLpZXQiNXhdeIAxkotnedo0fEHbsx15nx/0EJT9bHCfyh/l6g+l+4O2mjOE= user@AshDexter-T480"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDgAyMZJWhede0Q7cq626Zxbl+HUBlW+f1hTBG/TOB9ab1pAJ99I7bejXXhP7lvS95D0M+OkyPMv+4xYOU6cVjxwqEhybb9Thf8VIHRpRrgu4aC2jsxfcdRbZj//PikmhYYMzGvznwTWNgRPeERP78AvGt9jRSCETELqLcgTEPSw/SNTfMLPawwR7sJaTlWpmrBUsTPQmf5LbyK2U0pNB2SJyPu7xl7RuVOIcAPQiYCMzBPuZvvArawPq5YHz7wwkk4VJw2SpPdm98xwfEEunk7gm6o6G3x3nXWMH6fRM8drsaMOk2n5z4ZggLB6RBt4CazVuvogbH8tL2CLGzGQW8hUChSsZJUdZEleblz7l9MJL4c7rKeYFzVjH7lCBRD/+Qe8Ar9QkMWL2qCZJ24WG8di+fYIkO6Dt5m19rcrjfb9Deq39xTWpS5JYrDsV11kfEbBMZiI2ulgoEmsi9zu/24CqnQRSN1FYs6sTSmw5cWE8/9SJASQ2i3Pb+vTImv8hs= divya@DivyaVutakanti"
   # ~ means windows home directory
 }
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-
-
   cluster_name    = "${var.project_name}-${var.environment}"
   cluster_version = "1.31"
 
@@ -41,32 +39,32 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    # blue = {
+    blue = {
+      min_size      = 2
+      max_size      = 10
+      desired_size  = 2
+      capacity_type = "SPOT"
+      iam_role_additional_policies = {
+        AmazonEBSCSIDriverPolicy          = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+        AmazonElasticFileSystemFullAccess = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
+        ElasticLoadBalancingFullAccess = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
+      }
+      # EKS takes AWS Linux 2 as it's OS to the nodes
+      key_name = aws_key_pair.eks.key_name
+    }
+    # green = {
     #   min_size      = 3
     #   max_size      = 10
     #   desired_size  = 3
     #   capacity_type = "SPOT"
     #   iam_role_additional_policies = {
     #     AmazonEBSCSIDriverPolicy          = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-    #     AmazonElasticFileSystemFullAccess = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
+    #     AmazonElasticFileSystemFullAccess = "arn:aws:iam::aws:policy/AmazonElasticFileSystemFullAccess"
     #     ElasticLoadBalancingFullAccess = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
     #   }
     #   # EKS takes AWS Linux 2 as it's OS to the nodes
     #   key_name = aws_key_pair.eks.key_name
     # }
-    green = {
-      min_size      = 3
-      max_size      = 10
-      desired_size  = 3
-      capacity_type = "SPOT"
-      iam_role_additional_policies = {
-        AmazonEBSCSIDriverPolicy          = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-        AmazonElasticFileSystemFullAccess = "arn:aws:iam::aws:policy/AmazonElasticFileSystemFullAccess"
-        ElasticLoadBalancingFullAccess = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
-      }
-      # EKS takes AWS Linux 2 as it's OS to the nodes
-      key_name = aws_key_pair.eks.key_name
-    }
   }
 
   # Cluster access entry

@@ -14,11 +14,10 @@ variable "common_tags" {
     }
 }
 
-
 variable "zone_name" {
-    default = "daws81s.online"
+    default = "dev.divyavutakanti.com"
 }
 
 variable "zone_id" {
-    default = "Z09912121MS725XSKH1TG"
+    default = "Z02510657KRVXNZGHI6U"
 }
