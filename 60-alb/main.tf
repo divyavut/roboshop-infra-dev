@@ -55,7 +55,7 @@ module "records" {
   zone_name = var.zone_name #daws81s.online
   records = [
     {
-      name    = "roboshop-${var.environment}" 
+      name    = "roboshop-${var.environment}" # roboshop-dev.daws81s.online
       type    = "A"
       alias   = {
         name    = module.ingress_alb.dns_name

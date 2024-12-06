@@ -18,26 +18,21 @@ We are using bastion as our EKS client, so it will have
 * Make sure MySQL instance allows port no 3306 from bastion
 
 ```
-mysql -h expense-dev.czn6yzxlcsiv.us-east-1.rds.amazonaws.com -u root -pExpenseApp1
+mysql -h roboshop-dev.czn6yzxlcsiv.us-east-1.rds.amazonaws.com -u root -pRoboShop1
+```
+* Clone shipping component into bastion
+```
+git clone https://github.com/daws-81s/shipping.git
+```
+* Load the data into mysql
+```
+mysql -h roboshop-dev.czn6yzxlcsiv.us-east-1.rds.amazonaws.com -u root -pRoboShop1 < shipping/db/schema.sql
 ```
 ```
-USE transactions;
+mysql -h roboshop-dev.czn6yzxlcsiv.us-east-1.rds.amazonaws.com -u root -pRoboShop1 < shipping/db/app-user.sql
 ```
 ```
-CREATE TABLE IF NOT EXISTS transactions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    amount INT,
-    description VARCHAR(255)
-);
-```
-```
-CREATE USER IF NOT EXISTS 'expense'@'%' IDENTIFIED BY 'ExpenseApp@1';
-```
-```
-GRANT ALL ON transactions.* TO 'expense'@'%';
-```
-```
-FLUSH PRIVILEGES;
+mysql -h roboshop-dev.czn6yzxlcsiv.us-east-1.rds.amazonaws.com -u root -pRoboShop1 < shipping/db/master-data.sql
 ```
 
 ## Target group binding
@@ -55,16 +50,16 @@ aws configure
 ```
 
 ```
-aws eks update-kubeconfig --region us-east-1 --name expense-dev
+aws eks update-kubeconfig --region us-east-1 --name roboshop-dev
 ```
 
 ```
 kubectl get nodes
 ```
 
-* Create namespace expense
+* Create namespace roboshop
 ```
-kubectl create namespace expense
+kubectl create namespace roboshop
 ```
 
 * IAM policy
